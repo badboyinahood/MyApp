@@ -2,15 +2,12 @@ import {
   SafeAreaView,
   StyleSheet,
   FlatList,
+  ActivityIndicator,
   Text,
+  View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Header from '../components/Header';
 import SearchInput from '../components/SearchInput';
@@ -23,57 +20,51 @@ export default function HomeScreen() {
   const navigation = useNavigation<any>();
 
   const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetchEvents().then(data => setEvents(data));
+    fetchEvents()
+      .then(data => setEvents(data))
+      .catch(() => setError('Failed to load events'))
+      .finally(() => setLoading(false));
   }, []);
-
-  // оптимизация
-  const visibleEvents = useMemo(() => {
-    return events.slice(0, 20);
-  }, [events]);
-
-  const handlePress = useCallback(
-    (event: any) => {
-      navigation.navigate('Details', { event });
-    },
-    [navigation]
-  );
-
-  const renderItem = useCallback(
-    ({ item }: any) => (
-      <EventCard
-        title={item.title}
-        location={item.location}
-        date={item.date}
-        image={item.image}
-        onPress={() => handlePress(item)}
-      />
-    ),
-    [handlePress]
-  );
-
-  if (!visibleEvents.length) {
-    return <Text style={{ padding: 20 }}>Loading...</Text>;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={visibleEvents}
-        keyExtractor={(item, index) =>
-          item.id ? item.id.toString() : index.toString()
-        }
-        renderItem={renderItem}
-        ListHeaderComponent={
-          <>
-            <Header title="All Events" />
-            <SearchInput />
-            <CategoryList />
-          </>
-        }
-        contentContainerStyle={styles.content}
-      />
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <ActivityIndicator size="large" />
+        </View>
+      ) : error ? (
+        <Text style={{ padding: 20 }}>{error}</Text>
+      ) : (
+        <FlatList
+          data={events}
+          keyExtractor={(item, index) =>
+            item.id ? item.id.toString() : index.toString()
+          }
+          renderItem={({ item }) => (
+            <EventCard
+              title={item.title}
+              location={item.location}
+              date={item.date}
+              image={item.image}
+              onPress={() =>
+                navigation.navigate('Details', { event: item })
+              }
+            />
+          )}
+          ListHeaderComponent={
+            <>
+              <Header title="All Events" />
+              <SearchInput />
+              <CategoryList />
+            </>
+          }
+          contentContainerStyle={styles.content}
+        />
+      )}
     </SafeAreaView>
   );
 }

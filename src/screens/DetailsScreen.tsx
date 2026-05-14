@@ -17,48 +17,50 @@ export default function DetailsScreen() {
 
   const event = route.params?.event;
 
-  if (!event) {
-    return <Text>No event data</Text>;
-  }
-
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={styles.imageWrapper}>
-          <Image source={{ uri: event.image }} style={styles.image} />
+      {!event ? (
+        <Text style={{ padding: 20 }}>No event data</Text>
+      ) : (
+        <>
+          <ScrollView contentContainerStyle={styles.scroll}>
+            <View style={styles.imageWrapper}>
+              <Image source={{ uri: event.image }} style={styles.image} />
 
-          <View style={styles.overlay} />
+              <View style={styles.overlay} />
 
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Icon name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+              >
+                <Icon name="arrow-back" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
 
-        <View style={styles.content}>
-          <Text style={styles.title}>{event.title}</Text>
-          <Text style={styles.text}>{event.location}</Text>
-          <Text style={styles.text}>{event.date}</Text>
+            <View style={styles.content}>
+              <Text style={styles.title}>{event.title}</Text>
+              <Text style={styles.text}>{event.location}</Text>
+              <Text style={styles.text}>{event.date}</Text>
 
-          <Text style={styles.sectionTitle}>
-            About this event
-          </Text>
+              <Text style={styles.sectionTitle}>
+                About this event
+              </Text>
 
-          <Text style={styles.description}>
-            {event.description}
-          </Text>
-        </View>
-      </ScrollView>
+              <Text style={styles.description}>
+                {event.description}
+              </Text>
+            </View>
+          </ScrollView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>
-            Buy tickets
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.footer}>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>
+                Buy tickets
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </View>
   );
 }
