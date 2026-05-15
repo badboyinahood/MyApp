@@ -224,3 +224,64 @@ navigation.navigate('Details', { event });
 - React Navigation
 - Redux Toolkit
 - Context API
+
+# Cross Assignment 7 — Animation & Optimization
+
+## Опис
+
+У цьому етапі реалізовано анімацію інтерфейсу та оптимізацію продуктивності застосунку.
+
+---
+
+## Аналіз застосунку
+
+Було визначено:
+
+- Компонент для анімації:
+  EventCard (іконка при додаванні в обране)
+
+- Компонент з частими ререндерами:
+  EventCard у списку FlatList
+
+- Аналіз залежностей:
+  У проєкті відсутні важкі бібліотеки (moment, lodash), додаткова оптимізація не потрібна
+
+---
+
+## Анімація
+
+Реалізовано анімацію за допомогою LayoutAnimation:
+
+- Анімація спрацьовує при натисканні на 
+- Використано:
+  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+
+- Для Android увімкнено:
+  UIManager.setLayoutAnimationEnabledExperimental(true)
+
+---
+
+## Оптимізація продуктивності
+
+Застосовано наступні підходи:
+
+- React.memo для компонента EventCard
+- useCallback для renderItem у FlatList
+- Уникнення зайвих ререндерів компонентів
+
+---
+
+## Результат
+
+- Плавна анімація взаємодії
+- Зменшення кількості ререндерів
+- Покращення продуктивності списку
+
+---
+
+## Технології
+
+- React Native
+- LayoutAnimation
+- React Hooks (useCallback)
+- React.memo
