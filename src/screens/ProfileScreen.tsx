@@ -1,11 +1,26 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 
 import { COLORS } from '../constants/colors';
 
 export default function ProfileScreen() {
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === 'dark';
+
   return (
-    <View style={styles.container}>
-      {/* Avatar */}
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDark ? '#121212' : '#F5F6FA' },
+      ]}
+    >
       <Image
         source={{
           uri: 'https://i.pravatar.cc/150?img=12',
@@ -13,11 +28,24 @@ export default function ProfileScreen() {
         style={styles.avatar}
       />
 
-      {/* Name */}
-      <Text style={styles.name}>Konstantin Pak</Text>
-      <Text style={styles.email}>kostpak2002@gmail.com</Text>
+      <Text
+        style={[
+          styles.name,
+          { color: isDark ? '#fff' : COLORS.text },
+        ]}
+      >
+        Konstantin Pak
+      </Text>
 
-      {/* Buttons */}
+      <Text
+        style={[
+          styles.email,
+          { color: isDark ? '#aaa' : '#666' },
+        ]}
+      >
+        kostpak2002@gmail.com
+      </Text>
+
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Settings</Text>
@@ -34,7 +62,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
     alignItems: 'center',
     paddingTop: 60,
   },
@@ -49,11 +76,9 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.text
   },
 
   email: {
-    color: '#666',
     marginBottom: 30,
   },
 

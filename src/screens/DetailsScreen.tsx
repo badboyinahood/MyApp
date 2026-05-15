@@ -7,20 +7,32 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { COLORS } from '../constants/colors';
 
 export default function DetailsScreen() {
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === 'dark';
+
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
 
   const event = route.params?.event;
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDark ? '#121212' : '#fff' },
+      ]}
+    >
       {!event ? (
-        <Text style={{ padding: 20 }}>No event data</Text>
+        <Text style={{ padding: 20, color: isDark ? '#fff' : '#000' }}>
+          No event data
+        </Text>
       ) : (
         <>
           <ScrollView contentContainerStyle={styles.scroll}>
@@ -37,16 +49,54 @@ export default function DetailsScreen() {
               </TouchableOpacity>
             </View>
 
-            <View style={styles.content}>
-              <Text style={styles.title}>{event.title}</Text>
-              <Text style={styles.text}>{event.location}</Text>
-              <Text style={styles.text}>{event.date}</Text>
+            <View
+              style={[
+                styles.content,
+                { backgroundColor: isDark ? '#1E1E1E' : '#fff' },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.title,
+                  { color: isDark ? '#fff' : COLORS.text },
+                ]}
+              >
+                {event.title}
+              </Text>
 
-              <Text style={styles.sectionTitle}>
+              <Text
+                style={[
+                  styles.text,
+                  { color: isDark ? '#aaa' : COLORS.subText },
+                ]}
+              >
+                {event.location}
+              </Text>
+
+              <Text
+                style={[
+                  styles.text,
+                  { color: isDark ? '#aaa' : COLORS.subText },
+                ]}
+              >
+                {event.date}
+              </Text>
+
+              <Text
+                style={[
+                  styles.sectionTitle,
+                  { color: isDark ? '#fff' : COLORS.text },
+                ]}
+              >
                 About this event
               </Text>
 
-              <Text style={styles.description}>
+              <Text
+                style={[
+                  styles.description,
+                  { color: isDark ? '#aaa' : COLORS.subText },
+                ]}
+              >
                 {event.description}
               </Text>
             </View>
@@ -54,9 +104,7 @@ export default function DetailsScreen() {
 
           <View style={styles.footer}>
             <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>
-                Buy tickets
-              </Text>
+              <Text style={styles.buttonText}>Buy tickets</Text>
             </TouchableOpacity>
           </View>
         </>
@@ -68,7 +116,6 @@ export default function DetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.white,
   },
 
   imageWrapper: {
@@ -95,7 +142,6 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    backgroundColor: COLORS.white,
     marginTop: -20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -106,11 +152,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: COLORS.text,
   },
 
   text: {
-    color: COLORS.subText,
     marginBottom: 6,
   },
 
@@ -118,12 +162,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.text,
   },
 
   description: {
     marginTop: 10,
-    color: COLORS.subText,
     lineHeight: 20,
   },
 

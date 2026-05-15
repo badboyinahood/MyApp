@@ -1,6 +1,15 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useContext } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 import { COLORS } from '../constants/colors';
+import { ThemeContext } from '../context/ThemeContext';
 
 type Props = {
   title: string;
@@ -8,50 +17,99 @@ type Props = {
 };
 
 export default function Header({ title, onBackPress }: Props) {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const navigation = useNavigation<any>();
+
+  const isDark = theme === 'dark';
+
   return (
-    <View style={styles.container}>
-      {onBackPress ? (
-        <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
-          <Text style={styles.backText}>{'<'}</Text>
+        <View style={styles.container}>
+      {/* LEFT */}
+      <View style={styles.side}>
+        {onBackPress && (
+          <TouchableOpacity onPress={onBackPress}>
+            <Icon
+              name="arrow-back"
+              size={22}
+              color={isDark ? '#fff' : '#000'}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {/* CENTER (ABSOLUTE) */}
+      <Text
+        style={[
+          styles.title,
+          {
+            color: isDark ? '#fff' : COLORS.text,
+          },
+        ]}
+      >
+        {title}
+      </Text>
+
+      {/* RIGHT */}
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={styles.iconWrapper}
+          onPress={() => navigation.navigate('Favorites')}
+        >
+          <Icon
+            name="heart-outline"
+            size={20}
+            color={isDark ? '#fff' : '#000'}
+          />
         </TouchableOpacity>
-      ) : (
-        <View style={styles.placeholder} />
-      )}
 
-      <Text style={styles.title}>{title}</Text>
-
-      <View style={styles.placeholder} />
+        <TouchableOpacity
+          style={styles.iconWrapper}
+          onPress={toggleTheme}
+        >
+          <Icon
+            name={isDark ? 'sunny' : 'moon'}
+            size={20}
+            color={isDark ? '#fff' : '#000'}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
+  height: 50,
+  justifyContent: 'center',
+  alignItems: 'center', 
+  marginBottom: 10,
+  },
+
+  side: {
+    position: 'absolute',
+    left: 0,
+    width: 40,
+    alignItems: 'flex-start',
   },
 
   title: {
+    position: 'absolute',
+    alignSelf: 'center',  
     fontSize: 18,
     fontWeight: '500',
-    color: COLORS.text
   },
 
-  backButton: {
-    position: 'absolute',
-    left: 0,
-    padding: 10,
-  },
-
-  backText: {
-    fontSize: 18,
-  },
-
-  placeholder: {
+  actions: {
     position: 'absolute',
     right: 0,
-    width: 40,
+    flexDirection: 'row',
+  },
+
+    iconWrapper: {
+    width: 36,
+    height: 36,
+    justifyContent: 'center', // 🔥 теперь по центру
+    alignItems: 'center',
+    marginLeft: 6,
   },
 });

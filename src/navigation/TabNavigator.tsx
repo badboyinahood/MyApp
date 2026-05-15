@@ -6,14 +6,27 @@ import ProfileScreen from '../screens/ProfileScreen';
 
 import { COLORS } from '../constants/colors';
 
+import { useContext } from 'react';
+import { ThemeContext } from '../context/ThemeContext';
+
 
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === 'dark';
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+
+        tabBarStyle: {
+          backgroundColor: isDark ? '#1E1E1E' : '#fff',
+          borderTopWidth: 0,
+        },
+
+        tabBarActiveTintColor: isDark ? '#fff' : COLORS.primary,
+        tabBarInactiveTintColor: isDark ? '#888' : '#999',
 
         tabBarIcon: ({ color, size, focused }) => {
           let iconName = '';
@@ -28,9 +41,7 @@ export default function TabNavigator() {
 
           return <Icon name={iconName} size={size} color={color} />;
         },
-
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: '#999',
+        
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />

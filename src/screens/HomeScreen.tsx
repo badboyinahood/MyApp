@@ -3,11 +3,10 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
-  Text,
   View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import Header from '../components/Header';
 import SearchInput from '../components/SearchInput';
@@ -15,46 +14,58 @@ import CategoryList from '../components/CategoryList';
 import EventCard from '../components/EventCard';
 
 import { fetchEvents } from '../api/api';
+import { ThemeContext } from '../context/ThemeContext';
 
 export default function HomeScreen() {
   const navigation = useNavigation<any>();
+  const { theme } = useContext(ThemeContext);
 
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchEvents()
       .then(data => setEvents(data))
-      .catch(() => setError('Failed to load events'))
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          backgroundColor:
+            theme === 'light' ? '#F5F6FA' : '#1E1E1E',
+        },
+      ]}
+    >
       {loading ? (
         <View style={{ flex: 1, justifyContent: 'center' }}>
           <ActivityIndicator size="large" />
         </View>
-      ) : error ? (
-        <Text style={{ padding: 20 }}>{error}</Text>
       ) : (
         <FlatList
           data={events}
           keyExtractor={(item, index) =>
             item.id ? item.id.toString() : index.toString()
           }
-          renderItem={({ item }) => (
-            <EventCard
-              title={item.title}
-              location={item.location}
-              date={item.date}
-              image={item.image}
-              onPress={() =>
-                navigation.navigate('Details', { event: item })
-              }
-            />
-          )}
+          renderItem={({ item, index }) => {
+            const parsedId = item.id ? parseInt(item.id) : index + 1;
+
+            return (
+              <EventCard
+                id={parsedId}
+                title={item.title}
+                location={item.location}
+                date={item.date}
+                image={item.image}
+                onPress={() =>
+                  navigation.navigate('Details', { event: item })
+                }
+              />
+            );
+          }}
           ListHeaderComponent={
             <>
               <Header title="All Events" />
@@ -72,8 +83,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F6FA',
   },
+
   content: {
     padding: 16,
     paddingBottom: 80,

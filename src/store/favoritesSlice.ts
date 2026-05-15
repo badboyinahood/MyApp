@@ -1,23 +1,36 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+type FavoriteItem = {
+  id: number;
+  title: string;
+};
+
+type FavoritesState = {
+  items: FavoriteItem[];
+};
+
+const initialState: FavoritesState = {
+  items: [],
+};
 
 const favoritesSlice = createSlice({
   name: 'favorites',
-  initialState: {
-    items: [] as any[],
-  },
+  initialState,
   reducers: {
-    addFavorite: (state, action) => {
-      const exists = state.items.find(
+    addFavorite: (state, action: PayloadAction<FavoriteItem>) => {
+      const exists = state.items.some(
         item => item.id === action.payload.id
       );
 
-      if (!exists) {
+      // 🔥 защита от дублей и NaN
+      if (!exists && !isNaN(action.payload.id)) {
         state.items.push(action.payload);
       }
     },
-    removeFavorite: (state, action) => {
+
+    removeFavorite: (state, action: PayloadAction<number>) => {
       state.items = state.items.filter(
-        item => item.id !== action.payload.id
+        item => item.id !== action.payload
       );
     },
   },

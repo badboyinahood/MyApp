@@ -167,3 +167,60 @@ navigation.navigate('Details', { event });
 ![Details](./screenshots/details.png)
 ![Profile](./screenshots/profile.png)
 ![Loading](./screenshots/loading.png)
+
+
+# Cross Assignment 6 — Context API & Redux
+
+## Опис
+
+На цьому етапі додано глобальне управління станом додатку.
+
+---
+
+## Context API
+
+Реалізовано глобальну тему (light / dark):
+
+- ThemeContext
+- useContext
+- toggleTheme
+
+Тема застосовується на всіх екранах:
+- Home
+- Details
+- Profile
+- Favorites
+
+![Home](./screenshots/darkHome.png)
+![Details](./screenshots/darkDetails.png)
+![Profile](./screenshots/darkProfile.png)
+---
+
+## Redux (Favorites)
+
+Реалізовано систему обраних подій:
+
+- createSlice (favoritesSlice)
+- addFavorite
+- removeFavorite
+- useSelector / useDispatch
+
+![FavoritesClicked](./screenshots/favoritesClicked.png)
+![Favorites](./screenshots/favorites.png)
+---
+
+## Функціонал
+
+- Додавання подій в обране через іконку 
+- Видалення з обраного
+- Відображення списку обраних
+- UI змінюється в залежності від стану
+
+---
+
+## Технології
+
+- React Native
+- React Navigation
+- Redux Toolkit
+- Context API
