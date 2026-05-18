@@ -32,14 +32,10 @@ const styles = StyleSheet.create({
 
     paddingVertical: 12,
     backgroundColor: '#fff',
-
-    // фикс снизу
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-
-    // тень
     shadowColor: COLORS.white,
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.08,

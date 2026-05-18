@@ -1,17 +1,22 @@
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-
 import { COLORS } from '../constants/colors';
 
 type Props = {
   title: string;
   active?: boolean;
+  onPress?: () => void;
 };
 
-export default function CategoryChip({ title, active }: Props) {
+export default function CategoryChip({
+  title,
+  active,
+  onPress,
+}: Props) {
   return (
     <TouchableOpacity
       style={[styles.chip, active && styles.activeChip]}
       activeOpacity={0.8}
+      onPress={onPress} 
     >
       <Text style={[styles.text, active && styles.activeText]}>
         {title}
@@ -21,15 +26,13 @@ export default function CategoryChip({ title, active }: Props) {
 }
 
 const styles = StyleSheet.create({
-    chip: {
+  chip: {
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 24,
     backgroundColor: '#EDEFF3',
     marginRight: 10,
-
-    alignSelf: 'flex-start',
-    },
+  },
 
   activeChip: {
     backgroundColor: '#2F80ED',

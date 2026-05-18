@@ -2,19 +2,34 @@ import { View, TextInput, StyleSheet } from 'react-native';
 import { COLORS } from '../constants/colors';
 
 type Props = {
-  value?: string;
-  onChange?: (text: string) => void;
+  value: string;
+  onChange: (text: string) => void;
+  isDark?: boolean;
 };
 
-export default function SearchInput({ value, onChange }: Props) {
+export default function SearchInput({
+  value,
+  onChange,
+  isDark,
+}: Props) {
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: isDark ? '#2A2A2A' : '#EDEFF3',
+        },
+      ]}
+    >
       <TextInput
-        placeholder="Search"
-        placeholderTextColor="#999"
+        placeholder="Search events"
+        placeholderTextColor={isDark ? '#888' : '#999'}
         value={value}
         onChangeText={onChange}
-        style={styles.input}
+        style={[
+          styles.input,
+          { color: isDark ? '#fff' : COLORS.text },
+        ]}
       />
     </View>
   );
@@ -22,7 +37,6 @@ export default function SearchInput({ value, onChange }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#EDEFF3',
     borderRadius: 24,
     paddingHorizontal: 14,
     paddingVertical: 10,
@@ -31,6 +45,5 @@ const styles = StyleSheet.create({
 
   input: {
     fontSize: 14,
-    color: COLORS.text,
   },
 });

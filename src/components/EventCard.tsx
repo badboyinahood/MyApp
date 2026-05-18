@@ -5,10 +5,13 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { addToCart } from '../store/cartSlice';
 import { COLORS } from '../constants/colors';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -17,13 +20,23 @@ import {
 } from '../store/favoritesSlice';
 import { RootState } from '../store/store';
 
+if (
+  Platform.OS === 'android' &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 type Props = {
   id: number;
   title: string;
   location: string;
   date: string;
   image: string;
+  description: string;
+  price: number;
   onPress: () => void;
+  isPast?: boolean;
 };
 
 function EventCard({
@@ -32,7 +45,10 @@ function EventCard({
   location,
   date,
   image,
+  description,
+  price, 
   onPress,
+  isPast = false,
 }: Props) {
   const dispatch = useDispatch();
 
@@ -45,11 +61,42 @@ function EventCard({
   );
 
   const handleFavorite = () => {
+    LayoutAnimation.configureNext(
+      LayoutAnimation.Presets.easeInEaseOut
+    );
+
     if (isFavorite) {
       dispatch(removeFavorite(id));
     } else {
-      dispatch(addFavorite({ id, title }));
+      dispatch(
+        addFavorite({
+          id,
+          title,
+          location,
+          date,
+          image,
+          description,
+          price, 
+        })
+      );
     }
+  };
+
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  };
+
+  const formatTime = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   return (
@@ -57,17 +104,17 @@ function EventCard({
       style={styles.container}
       onPress={onPress}
       activeOpacity={0.8}
+      disabled={isPast}
     >
       <Image source={{ uri: image }} style={styles.image} />
 
-      {/* ❤️ ИЗБРАННОЕ */}
       <TouchableOpacity
         style={styles.heart}
         onPress={handleFavorite}
       >
         <Icon
           name={isFavorite ? 'heart' : 'heart-outline'}
-          size={16} // 🔥 уменьшили
+          size={16}
           color={isFavorite ? '#E53935' : '#999'}
         />
       </TouchableOpacity>
@@ -75,13 +122,46 @@ function EventCard({
       <View style={styles.info}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.location}>{location}</Text>
-        <Text style={styles.date}>{date}</Text>
+
+        <View style={styles.dateBlock}>
+          <Text style={styles.dateText}>
+            {formatDate(date)}
+          </Text>
+          <Text style={styles.dateText}>
+            {formatTime(date)}
+          </Text>
+        </View>
       </View>
 
-      {/* 🛒 КОРЗИНА */}
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Add to cart</Text>
-      </TouchableOpacity>
+      {!isPast && (
+        <TouchableOpacity
+            style={styles.button}
+            onPress={() =>
+                dispatch(
+                  addToCart({
+                    id,
+                    title,
+                    location,
+                    date,
+                    image,
+                    price, 
+                  })
+                )
+              }
+          >
+            <Text style={styles.buttonText}>
+              Add to cart
+            </Text>
+          </TouchableOpacity>
+      )}
+
+      {isPast && (
+        <View style={styles.overlay}>
+          <Text style={styles.overlayText}>
+            Event unavailable
+          </Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 }
@@ -122,10 +202,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 
-  date: {
-    color: '#999',
+  dateBlock: {
+    marginTop: 10,
+  },
+
+  dateText: {
+    color: '#777',
     fontSize: 12,
-    marginTop: 4,
+    marginTop: 2,
   },
 
   heart: {
@@ -134,7 +218,7 @@ const styles = StyleSheet.create({
     right: 8,
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 4, // 🔥 уменьшили
+    padding: 4,
     elevation: 3,
   },
 
@@ -152,5 +236,18 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 12,
     fontWeight: '600',
+  },
+
+  overlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  overlayText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

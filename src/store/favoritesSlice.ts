@@ -1,8 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type FavoriteItem = {
+export type FavoriteItem = {
+  price: number;
   id: number;
   title: string;
+  location: string;
+  date: string;
+  image: string;
+  description: string;
 };
 
 type FavoritesState = {
@@ -22,7 +27,7 @@ const favoritesSlice = createSlice({
         item => item.id === action.payload.id
       );
 
-      // 🔥 защита от дублей и NaN
+      // защита от дублей
       if (!exists && !isNaN(action.payload.id)) {
         state.items.push(action.payload);
       }

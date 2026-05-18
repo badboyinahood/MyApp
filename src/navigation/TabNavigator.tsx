@@ -9,6 +9,7 @@ import { COLORS } from '../constants/colors';
 import { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 
+import CartScreen from '../screens/CartScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,6 +39,10 @@ export default function TabNavigator() {
           if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
           }
+          
+          if (route.name === 'Cart') {
+            iconName = focused ? 'cart' : 'cart-outline';
+          }
 
           return <Icon name={iconName} size={size} color={color} />;
         },
@@ -45,6 +50,7 @@ export default function TabNavigator() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Cart" component={CartScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

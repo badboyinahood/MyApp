@@ -10,8 +10,10 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { formatDate, formatTime } from '../utils/date';
 import { COLORS } from '../constants/colors';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../store/cartSlice';
 
 export default function DetailsScreen() {
   const { theme } = useContext(ThemeContext);
@@ -19,14 +21,26 @@ export default function DetailsScreen() {
 
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
+  const dispatch = useDispatch();
 
   const event = route.params?.event;
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(event));
+  };
+
+  const handleBuyNow = () => {
+    dispatch(addToCart(event));
+    navigation.navigate('Main', {
+      screen: 'Cart',
+    });
+  };
 
   return (
     <View
       style={[
         styles.container,
-        { backgroundColor: isDark ? '#121212' : '#fff' },
+        { backgroundColor: isDark ? '#1E1E1E' : '#fff' },
       ]}
     >
       {!event ? (
@@ -79,7 +93,16 @@ export default function DetailsScreen() {
                   { color: isDark ? '#aaa' : COLORS.subText },
                 ]}
               >
-                {event.date}
+                {formatDate(event.date)}
+              </Text>
+
+              <Text
+                style={[
+                  styles.text,
+                  { color: isDark ? '#aaa' : COLORS.subText },
+                ]}
+              >
+                {formatTime(event.date)}
               </Text>
 
               <Text
@@ -99,13 +122,64 @@ export default function DetailsScreen() {
               >
                 {event.description}
               </Text>
+
+              <View style={styles.extra}>
+                <View style={styles.grid}>
+                  <View style={styles.cell}>
+                    <Text style={styles.label}>Venue</Text>
+                    <Text style={styles.value}>{event.venue}</Text>
+                  </View>
+
+                  <View style={[styles.cell, styles.right]}>
+                    <Text style={styles.label}>Duration</Text>
+                    <Text style={styles.value}>{event.duration}</Text>
+                  </View>
+
+                  <View style={styles.cell}>
+                    <Text style={styles.label}>Age</Text>
+                    <Text style={styles.value}>{event.age}</Text>
+                  </View>
+
+                  <View style={[styles.cell, styles.right]}>
+                    <Text style={styles.label}>Tickets</Text>
+                    <Text style={styles.value}>{event.ticketInfo}</Text>
+                  </View>
+                </View>
+              </View>
             </View>
           </ScrollView>
 
-          <View style={styles.footer}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Buy tickets</Text>
-            </TouchableOpacity>
+          <View
+            style={[
+              styles.footer,
+              {
+                backgroundColor: isDark ? '#1E1E1E' : '#fff',
+                borderTopColor: isDark ? '#333' : '#ddd',
+              },
+            ]}
+          >
+            <View style={styles.buttons}>
+              <TouchableOpacity
+                style={styles.cartBtn}
+                onPress={handleAddToCart}
+              >
+                <Text
+                  style={[
+                    styles.cartText,
+                    { color: isDark ? '#fff' : '#000' },
+                  ]}
+                >
+                  Add to cart
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.buyBtn}
+                onPress={handleBuyNow}
+              >
+                <Text style={styles.buttonText}>Buy now</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </>
       )}
@@ -169,23 +243,74 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 
+  extra: {
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: '#E6EEF7',
+    borderRadius: 16,
+  },
+
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+
+  cell: {
+    width: '50%',
+    marginBottom: 12,
+  },
+
+  right: {
+    alignItems: 'flex-end',
+  },
+
+  label: {
+    color: '#666',
+    fontSize: 12,
+  },
+
+  value: {
+    fontWeight: '500',
+    marginTop: 4,
+  },
+
   scroll: {
     paddingBottom: 120,
   },
 
   footer: {
     position: 'absolute',
-    bottom: 20,
-    left: 16,
-    right: 16,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderTopWidth: 1,
   },
 
-  button: {
+  buttons: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+
+  cartBtn: {
+    flex: 1,
+    backgroundColor: '#ccc',
+    paddingVertical: 14,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+
+  buyBtn: {
+    flex: 1,
     backgroundColor: COLORS.primary,
     paddingVertical: 14,
     borderRadius: 25,
     alignItems: 'center',
-    elevation: 5,
+  },
+
+  cartText: {
+    fontWeight: '600',
   },
 
   buttonText: {

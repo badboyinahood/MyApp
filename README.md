@@ -1,287 +1,165 @@
-# Event App
+# Pak_cross_final_project
 
-## Components:
+## Опис проєкту
 
-* Header
-* SearchInput
-* CategoryList
-* CategoryChip
-* EventCard
-* BottomNav
-* DetailsScreen
-* ProfileScreen
+Цей проєкт є мобільним застосунком для перегляду та придбання квитків на події.  
+Застосунок було розширено та покращено на основі базової версії з акцентом на зручність користування, сучасний інтерфейс та додаткову функціональність.
 
-## Features:
-
-* Navigation between screens
-* Event list
-* Event details screen
-* Profile screen
-
-## Screenshots
-
-![Home](./screenshots/home.png)
-![Details](./screenshots/details.png)
-![Profile](./screenshots/profile.png)
-
-# Cross Assignment 4 — Navigation
-
-##  Опис
-
-Мобільний застосунок на React Native з реалізованою навігацією.
-Реалізовано Stack та Tab навігацію, додано переходи між екранами та передачу даних через navigation.navigate і route.params.
----
-
-##  Навігація
-
-- Stack Navigation:
-  - Home → Details
-
-- Tab Navigation:
-  - Home
-  - Profile
+Метою проєкту було не створення застосунку з нуля, а підвищення якості вже існуючого продукту.
 
 ---
 
-##  Передача даних
+## Основний функціонал
 
-Перехід на екран деталей з передачею об'єкта:
-
-```js
-navigation.navigate('Details', { event });
-
-Отримання даних:
-
-const event = route.params?.event;
-```
-
----
-
-# Cross Assignment 5 - API Integration
-
-##  Опис
-
-У цьому завданні було реалізовано інтеграцію зовнішнього API у застосунок.
-
-Дані про події завантажуються з MockAPI та відображаються у списку на головному екрані.
+- Список подій із базовою інформацією
+- Екран деталей події з розширеним описом
+- Пошук подій за назвою та локацією
+- Фільтрація за категоріями
+- Обране з поділом на активні та завершені події
+- Кошик із керуванням кількістю квитків
+- Функція "Купити зараз" із переходом у кошик
+- Підтримка світлої та темної теми
+- Обробка помилок API
 
 ---
 
-##  API
+## Структура застосунку
 
-Використано MockAPI:
+Застосунок побудований за компонентним підходом із чітким розділенням логіки:
 
-https://6a03cd842afe8349b4b58220.mockapi.io/events
-
----
-
-##  Реалізація
-
-### Запит до API
-
-Логіка винесена в окремий файл:
-
-```js
-export const fetchEvents = async () => {
-  const response = await fetch(API_URL);
-
-  if (!response.ok) {
-    throw new Error('API error');
-  }
-
-  return response.json();
-};
-```
+- Екрани: Home, Details, Favorites, Cart
+- Компоненти: EventCard, SearchInput, CategoryList, CartItem, Header
+- Управління станом:
+  - Context API - тема
+  - Redux Toolkit - кошик та обране
 
 ---
 
-### Робота зі станом
+## Управління станом
 
-```js
-const [events, setEvents] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState('');
-```
+Використано два підходи:
 
----
+Context API:
+- для керування темою (light/dark)
+- простий глобальний стан
 
-### Завантаження даних
+Redux Toolkit:
+- для кошика (додавання, видалення, кількість)
+- для обраного (логіка фільтрації, збереження)
 
-```js
-useEffect(() => {
-  fetchEvents()
-    .then(data => setEvents(data))
-    .catch(() => setError('Failed to load events'))
-    .finally(() => setLoading(false));
-}, []);
-```
+Такий підхід забезпечує масштабованість та зручність підтримки.
 
 ---
 
-##  Відображення списку
+## Робота з API
 
-Використано FlatList та компонент EventCard:
+Застосунок використовує локальний JSON API для отримання подій.
 
-```js
-<FlatList
-  data={events}
-  renderItem={({ item }) => <EventCard {...item} />}
-  keyExtractor={item => item.id.toString()}
-/>
-```
+Було реалізовано:
 
----
-
-##  Loading
-
-Під час завантаження відображається:
-
-```js
-<ActivityIndicator />
-```
+- обробку помилок через try/catch
+- перевірку структури відповіді
+- обробку випадків:
+  - відсутність інтернету
+  - помилки сервера (404 / 500)
+  - некоректні дані
+- зрозумілі повідомлення про помилки
 
 ---
 
-##  Обробка помилок
+## Покращення UX/UI
 
-При помилці API:
+Було значно покращено взаємодію користувача із застосунком:
 
-```js
-<Text>Failed to load events</Text>
-```
-
----
-
-##  Інтеграція з навігацією
-
-При натисканні на подію відкривається екран деталей:
-
-```js
-navigation.navigate('Details', { event });
-```
+- реалізовано пошук у реальному часі
+- об’єднано пошук і фільтрацію за категоріями
+- покращено навігацію між екранами
+- додано нижню панель дій на екрані деталей
+- реалізовано блок додаткової інформації про подію
+- забезпечено узгодженість дизайну між екранами
+- повна підтримка темної теми
 
 ---
 
-##  Додаткові скріншоти
-![Home](./screenshots/home.png)
-![Details](./screenshots/details.png)
-![Profile](./screenshots/profile.png)
-![Loading](./screenshots/loading.png)
+## Екран деталей події
 
+Екран містить:
 
-# Cross Assignment 6 — Context API & Redux
+- форматовану дату і час
+- розширений опис події
+- додаткову інформацію:
+  - місце проведення (venue)
+  - тривалість (duration)
+  - вікові обмеження (age)
+  - інформацію про квитки (tickets)
 
-## Опис
+Також додано:
 
-На цьому етапі додано глобальне управління станом додатку.
-
----
-
-## Context API
-
-Реалізовано глобальну тему (light / dark):
-
-- ThemeContext
-- useContext
-- toggleTheme
-
-Тема застосовується на всіх екранах:
-- Home
-- Details
-- Profile
-- Favorites
-
-![Home](./screenshots/darkHome.png)
-![Details](./screenshots/darkDetails.png)
-![Profile](./screenshots/darkProfile.png)
----
-
-## Redux (Favorites)
-
-Реалізовано систему обраних подій:
-
-- createSlice (favoritesSlice)
-- addFavorite
-- removeFavorite
-- useSelector / useDispatch
-
-![FavoritesClicked](./screenshots/favoritesClicked.png)
-![Favorites](./screenshots/favorites.png)
----
-
-## Функціонал
-
-- Додавання подій в обране через іконку 
-- Видалення з обраного
-- Відображення списку обраних
-- UI змінюється в залежності від стану
+- кнопку "Додати в кошик"
+- кнопку "Купити зараз" з переходом у кошик
 
 ---
 
-## Технології
+## Функціонал кошика
+
+Реалізовано:
+
+- зміну кількості квитків
+- автоматичний підрахунок вартості
+- subtotal, shipping, total
+- доставка враховується тільки якщо кошик не пустий
+- можливість видалення товару
+
+---
+
+## Функціонал обраного
+
+Реалізовано:
+
+- поділ на активні та завершені події
+- автоматичну фільтрацію за датою
+- блокування взаємодії для завершених подій
+- візуальне позначення недоступних подій
+
+---
+
+## Скріншоти
+
+### Головний екран
+![Home Screen](./screenshots/home.png)
+
+### Екран деталей події
+![Details Screen](./screenshots/details.png)
+
+### Екран обраного
+![Favorites Screen](./screenshots/favorites.png)
+
+### Екран кошика
+![Cart Screen](./screenshots/cart.png)
+
+### Темна тема
+![Dark Theme](./screenshots/dark.png)
+
+---
+
+## Використані технології
 
 - React Native
-- React Navigation
+- TypeScript
 - Redux Toolkit
-- Context API
-
-# Cross Assignment 7 — Animation & Optimization
-
-## Опис
-
-У цьому етапі реалізовано анімацію інтерфейсу та оптимізацію продуктивності застосунку.
+- React Navigation
 
 ---
 
-## Аналіз застосунку
+## Висновок
 
-Було визначено:
+Застосунок було успішно покращено з базової версії до більш повноцінного продукту.
 
-- Компонент для анімації:
-  EventCard (іконка при додаванні в обране)
+Основні покращення:
 
-- Компонент з частими ререндерами:
-  EventCard у списку FlatList
+- розширений функціонал
+- покращений користувацький досвід
+- оптимізована структура коду
+- сучасний та узгоджений інтерфейс
 
-- Аналіз залежностей:
-  У проєкті відсутні важкі бібліотеки (moment, lodash), додаткова оптимізація не потрібна
-
----
-
-## Анімація
-
-Реалізовано анімацію за допомогою LayoutAnimation:
-
-- Анімація спрацьовує при натисканні на 
-- Використано:
-  LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-
-- Для Android увімкнено:
-  UIManager.setLayoutAnimationEnabledExperimental(true)
-
----
-
-## Оптимізація продуктивності
-
-Застосовано наступні підходи:
-
-- React.memo для компонента EventCard
-- useCallback для renderItem у FlatList
-- Уникнення зайвих ререндерів компонентів
-
----
-
-## Результат
-
-- Плавна анімація взаємодії
-- Зменшення кількості ререндерів
-- Покращення продуктивності списку
-
----
-
-## Технології
-
-- React Native
-- LayoutAnimation
-- React Hooks (useCallback)
-- React.memo
+Фінальний результат - зручний, масштабований та функціональний мобільний застосунок.

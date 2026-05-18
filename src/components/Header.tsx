@@ -24,7 +24,6 @@ export default function Header({ title, onBackPress }: Props) {
 
   return (
         <View style={styles.container}>
-      {/* LEFT */}
       <View style={styles.side}>
         {onBackPress && (
           <TouchableOpacity onPress={onBackPress}>
@@ -37,7 +36,6 @@ export default function Header({ title, onBackPress }: Props) {
         )}
       </View>
 
-      {/* CENTER (ABSOLUTE) */}
       <Text
         style={[
           styles.title,
@@ -49,7 +47,6 @@ export default function Header({ title, onBackPress }: Props) {
         {title}
       </Text>
 
-      {/* RIGHT */}
       <View style={styles.actions}>
         <TouchableOpacity
           style={styles.iconWrapper}
@@ -108,7 +105,7 @@ const styles = StyleSheet.create({
     iconWrapper: {
     width: 36,
     height: 36,
-    justifyContent: 'center', // 🔥 теперь по центру
+    justifyContent: 'center', 
     alignItems: 'center',
     marginLeft: 6,
   },

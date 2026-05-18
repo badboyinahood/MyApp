@@ -1,20 +1,29 @@
 import { ScrollView, StyleSheet } from 'react-native';
 import CategoryChip from './CategoryChip';
 
-export default function CategoryList() {
-  const categories = ['ALL EVENTS', 'CONCERTS', 'TECHNOLOGY'];
+type Props = {
+  selected: string;
+  onSelect: (category: string) => void;
+};
 
+const categories = ['All', 'Music', 'Tech', 'Business', 'Festival'];
+
+export default function CategoryList({
+  selected,
+  onSelect,
+}: Props) {
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
       style={styles.container}
     >
-      {categories.map((item, index) => (
+      {categories.map(item => (
         <CategoryChip
           key={item}
           title={item}
-          active={index === 0}
+          active={selected === item}
+          onPress={() => onSelect(item)}
         />
       ))}
     </ScrollView>

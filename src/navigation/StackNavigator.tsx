@@ -4,6 +4,7 @@ import TabNavigator from './TabNavigator';
 import DetailsScreen from '../screens/DetailsScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 
+
 const Stack = createNativeStackNavigator();
 
 export default function StackNavigator() {
