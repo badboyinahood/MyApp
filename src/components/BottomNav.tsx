@@ -11,7 +11,7 @@ export default function BottomNav({ activeTab }: Props) {
     <View style={styles.container}>
       <TouchableOpacity style={styles.tab}>
         <Text style={[styles.text, activeTab === 'home' && styles.active]}>
-          Home
+          Home123
         </Text>
       </TouchableOpacity>
 

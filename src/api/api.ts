@@ -1,3 +1,6 @@
+const API_URL =
+  'https://6a03cd842afe8349b4b58220.mockapi.io/events';
+
 export type EventType = {
   id: number;
   title: string;
@@ -15,9 +18,7 @@ export type EventType = {
 
 export async function fetchEvents(): Promise<EventType[]> {
   try {
-    const response = await fetch(
-      'https://6a03cd842afe8349b4b58220.mockapi.io/events'
-    );
+    const response = await fetch(API_URL);
 
     if (!response.ok) {
       throw new Error(
@@ -36,19 +37,29 @@ export async function fetchEvents(): Promise<EventType[]> {
     const validData = data.filter(
       (item: any) =>
         item &&
-        typeof item.id === 'number' &&
-        typeof item.title === 'string' &&
-        typeof item.date === 'string'
+        item.title &&
+        item.location &&
+        item.date
     );
 
-    return validData;
+    return validData.map((item: any) => ({
+      ...item,
+      id: Number(item.id), 
+    }));
+
   } catch (error: any) {
     if (error.message === 'Network request failed') {
       throw new Error('No internet connection');
     }
 
-    throw new Error(
-      error.message || 'Failed to fetch events'
-    );
+    if (error.message.includes('Failed to fetch')) {
+      throw new Error('Failed to fetch events (server error)');
+    }
+
+    if (error.message.includes('Invalid data')) {
+      throw new Error('Received invalid data from server');
+    }
+
+    throw new Error('Failed to fetch events');
   }
 }
